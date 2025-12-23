@@ -29,6 +29,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * Modified for Arduino on nRF52
  */
 
 #include "ldc3114.h"
@@ -106,11 +107,14 @@ static uint64_t             registerMap[NUM_REGISTERS];
 //*****************************************************************************
 void TIMER0IntHandler(void)
 {
-    // Clear the timer interrupt
-    MAP_TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    // // Clear the timer interrupt
+    // MAP_TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 
-    // Set Flag that timer has triggered.
-    collect_timer = true;
+    // // Set Flag that timer has triggered.
+    // collect_timer = true;
+
+
+    // TODO: not needed when we have Arduino?
 }
 
 
@@ -129,29 +133,33 @@ void TIMER0IntHandler(void)
 //****************************************************************************
 void startTimer(uint32_t timerPeriod)
 {
-    uint32_t systemClock = getSysClockHz();
+    // uint32_t systemClock = getSysClockHz();
 
-    // Disable and clear timer interrupts
-    MAP_TimerIntDisable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
-    MAP_TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    // // Disable and clear timer interrupts
+    // MAP_TimerIntDisable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    // MAP_TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 
-    // Enable processor interrupts
-    MAP_IntMasterEnable();
+    // // Enable processor interrupts
+    // MAP_IntMasterEnable();
 
-    // Configure the two 32-bit periodic timers
-    MAP_TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);
+    // // Configure the two 32-bit periodic timers
+    // MAP_TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);
 
-    MAP_TimerLoadSet(TIMER0_BASE, TIMER_A, (systemClock/ 1000000) * timerPeriod);
+    // MAP_TimerLoadSet(TIMER0_BASE, TIMER_A, (systemClock/ 1000000) * timerPeriod);
 
-    // Register the Timer 0A interrupt ISR
-    IntRegister(INT_TIMER0A, TIMER0IntHandler);
+    // // Register the Timer 0A interrupt ISR
+    // IntRegister(INT_TIMER0A, TIMER0IntHandler);
 
-    // Setup the interrupts for the timer timeouts
-    MAP_IntEnable(INT_TIMER0A);
-    MAP_TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    // // Setup the interrupts for the timer timeouts
+    // MAP_IntEnable(INT_TIMER0A);
+    // MAP_TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 
-    // Enable the timer
-    MAP_TimerEnable(TIMER0_BASE, TIMER_A);
+    // // Enable the timer
+    // MAP_TimerEnable(TIMER0_BASE, TIMER_A);
+
+
+    // TODO: not needed when we have Arduino?
+    (void) timerPeriod;
 }
 
 
@@ -165,11 +173,14 @@ void startTimer(uint32_t timerPeriod)
 //****************************************************************************
 void stopTimer()
 {
-    uint32_t systemClock = getSysClockHz();
+    // uint32_t systemClock = getSysClockHz();
 
-    // Disable and clear timer interrupts
-    MAP_TimerIntDisable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
-    MAP_TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    // // Disable and clear timer interrupts
+    // MAP_TimerIntDisable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    // MAP_TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+
+
+    // TODO: not needed when we have Arduino?
 }
 
 
@@ -321,25 +332,109 @@ void readRawData(void)
 //*****************************************************************************
 uint64_t readSingleRegister(uint8_t address, bool useBULK)
 {
-    int i;
-    int j;
+//     int i;
+//     int j;
 
-    /* Check that the register address is in range */
+//     /* Check that the register address is in range */
+//     assert(address < NUM_REGISTERS);
+
+//     // Build TX and RX byte array
+//     uint8_t dataTx[6] = { 0 };      // 1 words, each 6 byte long = 6 bytes maximum
+//     uint8_t dataRx[6] = { 0 };
+//     uint8_t outPacket[10] = { 0 };    // 1 words, each 6 byte long, + 1 byte for device id/channel + address, + data Size, +frame ID = 10 bytes maximum
+
+//     dataTx[0] = address;  // Address
+//     i2cSendArrays(dataTx, 1); //set register address
+//     i2cReceiveArrays(dataRx, ldcRegisterSize[address]);
+
+//     // flip the button data registers and device ID registers to be in the correct order
+//     uint8_t temp = dataRx[0];
+//     switch(address)
+//     {
+//         case DATA0_ADDRESS:
+//         case DATA1_ADDRESS:
+//         case DATA2_ADDRESS:
+//         case DATA3_ADDRESS:
+//         case MANUFACTURER_ID_ADDRESS:
+//         case DEVICE_ID_ADDRESS:
+//             dataRx[0] = dataRx[1];
+//             dataRx[1] = temp;
+//             break;
+//         case RAW_DATA0_ADDRESS:
+//         case RAW_DATA1_ADDRESS:
+//         case RAW_DATA2_ADDRESS:
+//         case RAW_DATA3_ADDRESS:
+//             dataRx[0] = dataRx[2];
+//             dataRx[2] = temp;
+//             break;
+//         default:
+//             break;
+//     }
+
+
+//     if(useBULK) // communicate register data over USB
+//     {
+//         j=0;
+//         outPacket[j++] = 0; //frame ID to ensure aligned data
+//         outPacket[j++] = deviceNumID;
+//         outPacket[j++] = address;
+//         outPacket[j++] = ldcRegisterSize[address];
+//         if(isI2C)
+//         {
+//             outPacket[j++] = dataRx[0];
+//         }
+//     }
+
+//     registerMap[address] = dataRx[0];
+
+//     for(i = 1; i < ldcRegisterSize[address]; i++)
+//     {
+//         registerMap[address] = (registerMap[address] << 8) | dataRx[i];
+//         if(useBULK)
+//         {
+//             outPacket[j] = dataRx[i];
+//             j++;
+//         }
+//     }
+
+//     uint32_t spaceAvailable = USBBufferSpaceAvailable(BULK_TX_BUFFER);
+//     if(useBULK)
+//     {
+//         //Send data on BULK channel
+// //        if(spaceAvailable < ldcRegisterSize[regSize_Select][address]+4)
+// //        {
+// //            json_console("Error, not enough buffer space. have: %d, need: %d", spaceAvailable, ldcRegisterSize[regSize_Select][address]+4);
+// //        }
+
+//         //wait for space to be available on the buffer
+//         while(spaceAvailable < ldcRegisterSize[address]+4)
+//         {
+//             spaceAvailable = USBBufferSpaceAvailable(BULK_TX_BUFFER);
+//         }
+
+//         USBBufferWrite(BULK_TX_BUFFER, outPacket, ldcRegisterSize[address]+4);
+//     }
+
+//     return registerMap[address];
+
+
+    // We never call this function with useBULK == true
+    assert(!useBULK);
+
+    // Check that the register address is in range
     assert(address < NUM_REGISTERS);
 
-    // Build TX and RX byte array
+    // Build TX and RX byte array, packet only needed for useBULK
     uint8_t dataTx[6] = { 0 };      // 1 words, each 6 byte long = 6 bytes maximum
     uint8_t dataRx[6] = { 0 };
-    uint8_t outPacket[10] = { 0 };    // 1 words, each 6 byte long, + 1 byte for device id/channel + address, + data Size, +frame ID = 10 bytes maximum
 
-    dataTx[0] = address;  // Address
-    i2cSendArrays(dataTx, 1); //set register address
+    dataTx[0] = address;
+    i2cSendArrays(dataTx, 1);
     i2cReceiveArrays(dataRx, ldcRegisterSize[address]);
 
     // flip the button data registers and device ID registers to be in the correct order
     uint8_t temp = dataRx[0];
-    switch(address)
-    {
+    switch (address) {
         case DATA0_ADDRESS:
         case DATA1_ADDRESS:
         case DATA2_ADDRESS:
@@ -360,48 +455,10 @@ uint64_t readSingleRegister(uint8_t address, bool useBULK)
             break;
     }
 
-
-    if(useBULK) // communicate register data over USB
-    {
-        j=0;
-        outPacket[j++] = 0; //frame ID to ensure aligned data
-        outPacket[j++] = deviceNumID;
-        outPacket[j++] = address;
-        outPacket[j++] = ldcRegisterSize[address];
-        if(isI2C)
-        {
-            outPacket[j++] = dataRx[0];
-        }
-    }
-
-    registerMap[address] = dataRx[0];
-
-    for(i = 1; i < ldcRegisterSize[address]; i++)
-    {
-        registerMap[address] = (registerMap[address] << 8) | dataRx[i];
-        if(useBULK)
-        {
-            outPacket[j] = dataRx[i];
-            j++;
-        }
-    }
-
-    uint32_t spaceAvailable = USBBufferSpaceAvailable(BULK_TX_BUFFER);
-    if(useBULK)
-    {
-        //Send data on BULK channel
-//        if(spaceAvailable < ldcRegisterSize[regSize_Select][address]+4)
-//        {
-//            json_console("Error, not enough buffer space. have: %d, need: %d", spaceAvailable, ldcRegisterSize[regSize_Select][address]+4);
-//        }
-
-        //wait for space to be available on the buffer
-        while(spaceAvailable < ldcRegisterSize[address]+4)
-        {
-            spaceAvailable = USBBufferSpaceAvailable(BULK_TX_BUFFER);
-        }
-
-        USBBufferWrite(BULK_TX_BUFFER, outPacket, ldcRegisterSize[address]+4);
+    registerMap[address] = 0;
+    for (int i = 0; i < ldcRegisterSize[address]; i++) {
+        registerMap[address] = 
+            (registerMap[address] << 8) | dataRx[i];
     }
 
     return registerMap[address];
@@ -529,8 +586,11 @@ void activeMode(void)
 //*****************************************************************************
 void LPMode(void)
 {
-    // write GPIO low for LP mode
-    MAP_GPIOPinWrite(LPWRB_PORT, LPWRB_PIN, LOW);
+    // // write GPIO low for LP mode
+    // MAP_GPIOPinWrite(LPWRB_PORT, LPWRB_PIN, LOW);
+
+
+    // TODO: Low-power / normal mode GPIO control is not wired
 }
 
 
@@ -546,8 +606,11 @@ void LPMode(void)
 //*****************************************************************************
 void NPMode(void)
 {
-    // write GPIO High for NP mode
-    MAP_GPIOPinWrite(LPWRB_PORT, LPWRB_PIN, HIGH);
+    // // write GPIO High for NP mode
+    // MAP_GPIOPinWrite(LPWRB_PORT, LPWRB_PIN, HIGH);
+
+
+    // TODO: Low-power / normal mode GPIO control is not wired
 }
 
 
@@ -562,15 +625,19 @@ void NPMode(void)
 //*****************************************************************************
 uint8_t OUTxGPIO(void)
 {
-    // write GPIO low for LP mode
-    uint8_t result;
-    result = MAP_GPIOPinRead(OUT3_PORT, OUT3_PIN);
-    result = result|MAP_GPIOPinRead(OUT2_PORT, OUT2_PIN);
-    result = result>>4;
-    result = result|MAP_GPIOPinRead(OUT1_PORT, OUT1_PIN);
-    result = result|MAP_GPIOPinRead(OUT0_PORT, OUT0_PIN);
+    // // write GPIO low for LP mode
+    // uint8_t result;
+    // result = MAP_GPIOPinRead(OUT3_PORT, OUT3_PIN);
+    // result = result|MAP_GPIOPinRead(OUT2_PORT, OUT2_PIN);
+    // result = result>>4;
+    // result = result|MAP_GPIOPinRead(OUT1_PORT, OUT1_PIN);
+    // result = result|MAP_GPIOPinRead(OUT0_PORT, OUT0_PIN);
 
-    return result;
+    // return result;
+
+
+    // TODO: OUT0–OUT3 GPIOs are not monitored
+    return 0;
 }
 
 
@@ -592,6 +659,7 @@ void configureDevice(void)
      * You can remove any default settings if the device was reset */
 
     writeSingleRegister(EN_ADDRESS, EN_ALL_MASK);
+    // writeSingleRegister(EN_ADDRESS, EN_EN0_MASK);
     writeSingleRegister(NP_SCAN_RATE_ADDRESS, NP_SCAN_RATE_NPSR_80SPS);
 //    writeSingleRegister(GAIN0_ADDRESS, GAIN0_DEFAULT);
     writeSingleRegister(LP_SCAN_RATE_ADDRESS, LP_SCAN_RATE_LPSR_25SPS);

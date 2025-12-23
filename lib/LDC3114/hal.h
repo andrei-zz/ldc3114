@@ -29,6 +29,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * Modified for Arduino on nRF52
  */
 
 #ifndef INTERFACE_H_
@@ -58,9 +59,9 @@
 
 #ifdef EXAMPLE_CODE
 /*  --- INSERT YOUR CODE HERE --- */
-#include "ti/devices/msp432e4/driverlib/driverlib.h"
+// #include "ti/devices/msp432e4/driverlib/driverlib.h"
 #else
-#include "settings.h"
+// #include "settings.h"
 #endif
 
 
@@ -126,6 +127,11 @@
 #define EEPROM_WP_EN_PIN    (GPIO_PIN_3)
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 //*****************************************************************************
 //
 // Function Prototypes
@@ -155,11 +161,19 @@ void    enableINTBinterrupt(void);
 //
 //*****************************************************************************
 /** Alias used for setting GPIOs pins to the logic "high" state */
+#ifndef HIGH
 #define HIGH                ((bool) true)
+#endif
 
 /** Alias used for setting GPIOs pins to the logic "low" state */
+#ifndef LOW
 #define LOW                 ((bool) false)
+#endif
 
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* INTERFACE_H_ */

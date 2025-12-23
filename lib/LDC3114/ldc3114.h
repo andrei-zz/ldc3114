@@ -81,6 +81,7 @@
 
 // Register names, used by EVM firmware
 extern const char *ldcRegisterNames[];
+extern const uint8_t ldcRegisterSize[];
 
 #endif  // EXAMPLE_CODE
 
