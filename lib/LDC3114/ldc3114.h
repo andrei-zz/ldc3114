@@ -161,7 +161,7 @@ void        startTimer(uint32_t timerPeriod);
 void        stopTimer(void);
 
 // Getter functions
-uint16_t    getRegisterValue(uint8_t address);
+uint64_t    getRegisterValue(uint8_t address);
 //void        getEVMID(void);
 
 // Helper functions

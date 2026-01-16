@@ -189,7 +189,7 @@ void stopTimer()
 //
 //! Getter function to access registerMap array from outside of this module.
 //!
-//! \fn uint16_t getRegisterValue(uint8_t address)
+//! \fn uint64_t getRegisterValue(uint8_t address)
 //!
 //! NOTE: The internal registerMap arrays stores the last know register value,
 //! since the last read or write operation to that register. This function
@@ -198,10 +198,10 @@ void stopTimer()
 //! controlled register, it is recommend to use readSingleRegister() to read the
 //! current register value.
 //!
-//! \return unsigned 16-bit register value.
+//! \return unsigned 64-bit register value.
 //
 //*****************************************************************************
-uint16_t getRegisterValue(uint8_t address)
+uint64_t getRegisterValue(uint8_t address)
 {
     assert(address < NUM_REGISTERS);
     return registerMap[address];

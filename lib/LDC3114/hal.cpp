@@ -38,6 +38,7 @@
 extern "C" {
 #include "hal.h"
 }
+#include "utils.h"
 
 //****************************************************************************
 //
@@ -610,15 +611,13 @@ void CheckI2C(void)
 void DetermineDevice(void)
 {
     uint64_t value = 0;
-    uint8_t regAddr = 0xFC;
-    uint8_t idAddr = 0xFE;
 
     Address_Select = 0x2A;
-    value = readSingleRegister(regAddr, false);
-    if(value == 0x5449)
+    value = readSingleRegister(MANUFACTURER_ID_ADDRESS, false);
+    if(value == MANUFACTURER_ID_DEFAULT)
     {
-        deviceID = (readSingleRegister(idAddr, false) & 0xFFFF);
-        if (deviceID == 0x4000)
+        deviceID = readSingleRegister(DEVICE_ID_ADDRESS, false) & 0xFFFF;
+        if (deviceID == DEVICE_ID_DEFAULT)
         {
             regSize_Select = 0;
         }
@@ -627,12 +626,17 @@ void DetermineDevice(void)
             regSize_Select = 1;
         }
 
-        Serial.printf("LDC device found at 0x%x, deviceID=0x%x\n", 
-            Address_Select, deviceID);
+        Serial.print("LDC device found at ");
+        printHexWithPadding(Address_Select, 1);
+        Serial.print(", deviceID=");
+        printHexWithPadding(deviceID, ldcRegisterSize[DEVICE_ID_ADDRESS]);
+        Serial.print("\n");
         return;
     }
 
-    Serial.printf("ERROR: No LDC device found at I2C 0x%x\n", Address_Select);
+    Serial.print("ERROR: No LDC device found at I2C ");
+    printHexWithPadding(Address_Select, 1);
+    Serial.print("\n");
 }
 
 
