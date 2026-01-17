@@ -32,7 +32,9 @@
  * Modified for Arduino on nRF52
  */
 
+#include "common.h"
 #include "ldc3114.h"
+#include <Arduino.h>
 
 #ifdef EXAMPLE_CODE
 #else
@@ -224,25 +226,41 @@ uint64_t getRegisterValue(uint8_t address)
 //*****************************************************************************
 void ldcStartup(void)
 {
+    #if LOG_LEVEL > 1
+        Serial.println("ldcStartup():");
+    #endif
+
     /* (OPTIONAL) Provide additional delay time for power supply settling */
     delay_ms(50);
 
     /* (RECOMMENDED) Reset the device */
     resetDevice();
+    #if LOG_LEVEL > 1
+        Serial.println("  resetDevice() done");
+    #endif
 
     /* (REQUIRED) Initialize internal 'registerMap' array with device default settings */
     restoreRegisterDefaults();
 
     /* (OPTIONAL) Configuration mode */
     configMode();
+    #if LOG_LEVEL > 1
+        Serial.println("  configMode() done, LDC now in config mode.");
+    #endif
 
     /* (OPTIONAL) Configure device
      * Note. This requires configuration mode to have run first*/
     configureDevice();
+    #if LOG_LEVEL > 1
+        Serial.println("  configureDevice() done");
+    #endif
 
     /* (OPTIONAL) Active processing mode
      * Note. This is required if configMode was uncommented*/
     activeMode();
+    #if LOG_LEVEL > 1
+        Serial.println("  activeMode() done, LDC now in active processing mode");
+    #endif
 
     /* (OPTIONAL) Read back all registers */
 //    readAllRegisters();

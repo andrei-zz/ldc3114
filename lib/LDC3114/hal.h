@@ -128,9 +128,9 @@
 #define EEPROM_WP_EN_PIN    (GPIO_PIN_3)
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
 
 //*****************************************************************************
@@ -161,20 +161,20 @@ void    enableINTBinterrupt(void);
 // Macros
 //
 //*****************************************************************************
-/** Alias used for setting GPIOs pins to the logic "high" state */
-#ifndef HIGH
-#define HIGH                ((bool) true)
-#endif
+// /** Alias used for setting GPIOs pins to the logic "high" state */
+// #ifndef HIGH
+// #define HIGH                ((bool) true)
+// #endif
 
-/** Alias used for setting GPIOs pins to the logic "low" state */
-#ifndef LOW
-#define LOW                 ((bool) false)
-#endif
+// /** Alias used for setting GPIOs pins to the logic "low" state */
+// #ifndef LOW
+// #define LOW                 ((bool) false)
+// #endif
 
 
-#ifdef __cplusplus
-}
-#endif
+// #ifdef __cplusplus
+// }
+// #endif
 
 
 #endif /* INTERFACE_H_ */

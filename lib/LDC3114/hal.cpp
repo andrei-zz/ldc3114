@@ -29,15 +29,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Modified for Arduino on nRF52
+ * Modified for Arduino-compatible MCUs
  */
 
 #include <Arduino.h>
 #include <Wire.h>
 
-extern "C" {
-  #include "hal.h"
-}
+#include "hal.h"
+#include "common.h"
 #include "utils.h"
 
 //****************************************************************************
@@ -626,17 +625,26 @@ void DetermineDevice(void)
             regSize_Select = 1;
         }
 
-        Serial.print("LDC device found at ");
-        printHexWithPadding(Address_Select, 1);
-        Serial.print(", deviceID=");
-        printHexWithPadding(deviceID, ldcRegisterSize[DEVICE_ID_ADDRESS]);
-        Serial.println();
+        #if LOG_LEVEL > 0
+            Serial.print("LDC device found at ");
+            printHexWithPadding(Address_Select, sizeof(Address_Select));
+            Serial.print(", deviceID=");
+            printHexWithPadding(deviceID, ldcRegisterSize[DEVICE_ID_ADDRESS]);
+            Serial.println();
+        #endif
         return;
     }
 
-    Serial.print("ERROR: No LDC device found at I2C ");
-    printHexWithPadding(Address_Select, 1);
-    Serial.println();
+    #if LOG_LEVEL > 0
+        Serial.print("ERROR: No LDC device found at I2C ");
+        printHexWithPadding(Address_Select, sizeof(Address_Select));
+        Serial.println();
+    #endif
+
+    #if LOG_LEVEL > 0
+        Serial.println("  Halting...");
+    #endif
+    while (1);
 }
 
 

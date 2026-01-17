@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-extern "C" {
+// extern "C" {
   #include "ldc3114.h"
   // #include "hal.h"
-}
+// }
 #include "common.h"
 #include "utils.h"
 
@@ -43,11 +43,14 @@ uint64_t printRegister(uint8_t address, uint64_t opts) {
   }
 
   unsigned long value = raw & mask;
-  Serial.print("  ");
-  Serial.print(name);
-  Serial.print(": ");
-  printHexWithPadding(value, size);
-  Serial.println();
+
+  #if LOG_LEVEL > 0
+    Serial.print("  ");
+    Serial.print(name);
+    Serial.print(": ");
+    printHexWithPadding(value, size);
+    Serial.println();
+  #endif
 
   return value;
 }
