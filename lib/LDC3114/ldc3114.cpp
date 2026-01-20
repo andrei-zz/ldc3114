@@ -39,7 +39,7 @@
 #ifdef EXAMPLE_CODE
 #else
 // Register names, used by EVM firmware
-const char *ldcRegisterNames[NUM_REGISTERS] = {"STATUS","OUT", \
+const char* ldcRegisterNames[NUM_REGISTERS] = {"STATUS","OUT", \
                                                "DATA0","","DATA1","","DATA2","","DATA3","", \
                                                "RESET","","EN","NP_SCAN_RATE","GAIN0","LP_SCAN_RATE", \
                                                "GAIN1","INTPOL","GAIN2","LP_BASE_INC","GAIN3", \
@@ -419,9 +419,9 @@ uint64_t readSingleRegister(uint8_t address, bool useBULK)
 //     if(useBULK)
 //     {
 //         //Send data on BULK channel
-// //        if(spaceAvailable < ldcRegisterSize[regSize_Select][address]+4)
+// //        if(spaceAvailable < ldcRegisterSize[address]+4)
 // //        {
-// //            json_console("Error, not enough buffer space. have: %d, need: %d", spaceAvailable, ldcRegisterSize[regSize_Select][address]+4);
+// //            json_console("Error, not enough buffer space. have: %d, need: %d", spaceAvailable, ldcRegisterSize[address]+4);
 // //        }
 
 //         //wait for space to be available on the buffer

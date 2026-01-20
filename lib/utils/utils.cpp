@@ -42,7 +42,7 @@ uint64_t printRegister(uint8_t address, uint64_t opts) {
     mask = (1ULL << (size * 8)) - 1ULL;
   }
 
-  unsigned long value = raw & mask;
+  size_t value = raw & mask;
 
   #if LOG_LEVEL > 0
     Serial.print("  ");

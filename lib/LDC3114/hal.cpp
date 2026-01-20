@@ -55,7 +55,6 @@ bool HS_Preamble_Sent = false;
 
 uint8_t  Address_Select = 0x2A;
 uint16_t deviceID = 0;
-uint8_t  regSize_Select = 0;  // TODO: unused
 
 //****************************************************************************
 //
@@ -607,44 +606,46 @@ void CheckI2C(void)
 //
 //*****************************************************************************
 
-void DetermineDevice(void)
-{
-    uint64_t value = 0;
+void DetermineDevice(void) {
+  uint64_t value = 0;
+  Address_Select = 0x2A;
 
-    Address_Select = 0x2A;
+  do {
     value = readSingleRegister(MANUFACTURER_ID_ADDRESS, false);
-    if(value == MANUFACTURER_ID_DEFAULT)
-    {
-        deviceID = readSingleRegister(DEVICE_ID_ADDRESS, false) & 0xFFFF;
-        if (deviceID == DEVICE_ID_DEFAULT)
-        {
-            regSize_Select = 0;
-        }
-        else
-        {
-            regSize_Select = 1;
-        }
+    if (value == MANUFACTURER_ID_DEFAULT && deviceID == DEVICE_ID_DEFAULT) {
+      deviceID = readSingleRegister(DEVICE_ID_ADDRESS, false) & 0xFFFF;
 
-        #if LOG_LEVEL > 0
-            Serial.print("LDC device found at ");
-            printHexWithPadding(Address_Select, sizeof(Address_Select));
-            Serial.print(", deviceID=");
-            printHexWithPadding(deviceID, ldcRegisterSize[DEVICE_ID_ADDRESS]);
-            Serial.println();
-        #endif
-        return;
+      #if LOG_LEVEL > 0
+        Serial.print("  LDC3114 found at I2C address ");
+        printHexWithPadding(Address_Select, sizeof(Address_Select));
+        Serial.println();
+        Serial.print("  deviceID=");
+        printHexWithPadding(deviceID, ldcRegisterSize[DEVICE_ID_ADDRESS]);
+        Serial.println();
+      #endif
+      return;
     }
 
     #if LOG_LEVEL > 0
-        Serial.print("ERROR: No LDC device found at I2C ");
-        printHexWithPadding(Address_Select, sizeof(Address_Select));
-        Serial.println();
+      Serial.print("  ERROR: No LDC device found at I2C ");
+      printHexWithPadding(Address_Select, sizeof(Address_Select));
+      Serial.println();
     #endif
 
-    #if LOG_LEVEL > 0
-        Serial.println("  Halting...");
+    #if HALT_WHEN_NOT_FOUND
+      break;
+    #else
+      #if LOG_LEVEL > 1
+        Serial.println("  Retrying...");
+      #endif
+      delay(2000);
     #endif
-    while (1);
+  } while (value != MANUFACTURER_ID_DEFAULT || deviceID != DEVICE_ID_DEFAULT);
+
+  #if LOG_LEVEL > 0
+    Serial.println("  Halting...");
+  #endif
+  while (1);
 }
 
 
